@@ -24,7 +24,7 @@ class ChannelGate(nn.Module):
             nn.Linear(gate_channels // reduction_ratio, gate_channels)
             )
         self.pool_types = pool_types
-    def forward(self, x):
+    def forward(self, x): # x.shape -> [64, 64, 300]
         channel_att_sum = None
         for pool_type in self.pool_types:
             if pool_type=='avg':
@@ -39,7 +39,7 @@ class ChannelGate(nn.Module):
             else:
                 channel_att_sum = channel_att_sum + channel_att_raw
 
-        scale = F.sigmoid(channel_att_sum).unsqueeze(1).unsqueeze(2).expand_as(x)
+        scale = F.sigmoid(channel_att_sum).unsqueeze(2).expand_as(x) # channel_att_sum.shape -> [64, 64]
         return x * scale
 
 
