@@ -54,7 +54,7 @@ class Feature(nn.Module):
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
-        self.channel_2 = ChannelGate(32, pool_types=['avg', 'max'])
+        self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_deconv=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
