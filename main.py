@@ -164,13 +164,13 @@ if __name__ == "__main__":
     netG.apply(weights_init)
     netF.apply(weights_init)
 
-    # print ('Training using Adam')
-    # opt_g = optim.Adam(netG.parameters(), lr=args.lr, weight_decay=0.0005)
-    # opt_f = optim.Adam(netF.parameters(), lr=args.lr, weight_decay=0.0005)
+    print ('Training using Adam')
+    opt_g = optim.Adam(netG.parameters(), lr=args.lr, weight_decay=0.0005)
+    opt_f = optim.Adam(netF.parameters(), lr=args.lr, weight_decay=0.0005)
 
-    print ('Training using SGDZ')
-    opt_g = optim.SGD(netG.parameters(), lr=args.lr, weight_decay=0.0005)
-    opt_f = optim.SGD(netF.parameters(), lr=args.lr, weight_decay=0.0005)
+    # print ('Training using SGD')
+    # opt_g = optim.SGD(netG.parameters(), lr=args.lr, weight_decay=0.0005)
+    # opt_f = optim.SGD(netF.parameters(), lr=args.lr, weight_decay=0.0005)
 
     max_correct = -1.0
     correct_array = []
