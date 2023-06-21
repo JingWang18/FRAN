@@ -53,10 +53,11 @@ class Feature(nn.Module):
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
-        self.channel = ChannelGate(64, pool_types=['avg', 'max'])
+        self.channel = ChannelGate(32, pool_types=['avg', 'max'])
 
     def forward(self, x, is_deconv=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+        x = self.channel(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         # x = self.channel(x)
         return x
