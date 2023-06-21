@@ -28,10 +28,10 @@ class ChannelGate(nn.Module):
         channel_att_sum = None
         for pool_type in self.pool_types:
             if pool_type=='avg':
-                avg_pool = F.avg_pool1d(x, (x.size(1), x.size(2)), stride=(x.size(1), x.size(2)))
+                avg_pool = F.avg_pool1d(x, kernel_size=x.size(2), stride=x.size(2))
                 channel_att_raw = self.mlp(avg_pool)
             elif pool_type=='max':
-                max_pool = F.max_pool1d(x, (x.size(1), x.size(2)), stride=(x.size(1), x.size(2)))
+                max_pool = F.max_pool1d(x, kernel_size=x.size(2), stride=x.size(2))
                 channel_att_raw = self.mlp(max_pool)
 
             if channel_att_sum is None:
@@ -46,9 +46,9 @@ class ChannelGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv1 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding =1)
+        self.conv1 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=1)
         self.bn1 = nn.BatchNorm1d(32)
-        self.conv21 = nn.Conv1d(32, 64, kernel_size=4, stride=1, padding =2)
+        self.conv21 = nn.Conv1d(32, 64, kernel_size=4, stride=1, padding=2)
         self.bn21 = nn.BatchNorm1d(64)
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
