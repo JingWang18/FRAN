@@ -58,7 +58,7 @@ class Feature(nn.Module):
     def forward(self, x, is_deconv=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
-        x = self.channel(x)
+        # x = self.channel(x)
         return x
 
 class Predictor(nn.Module):
