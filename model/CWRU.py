@@ -14,7 +14,7 @@ class Flatten(nn.Module):
         return x.view(x.size(0), -1)
 
 class ChannelGate(nn.Module):
-    def __init__(self, gate_channels, reduction_ratio=8, pool_types=['avg', 'max']):
+    def __init__(self, gate_channels, reduction_ratio=16, pool_types=['avg', 'max']):
         super(ChannelGate, self).__init__()
         self.gate_channels = gate_channels
         self.mlp = nn.Sequential(
@@ -53,8 +53,8 @@ class Feature(nn.Module):
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
-        # self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
-        self.channel_1 = ChannelGate(32, pool_types=['max'])
+        self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
+        # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_deconv=False):
