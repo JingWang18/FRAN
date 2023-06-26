@@ -186,10 +186,12 @@ if __name__ == "__main__":
         tic = time.time()
         for i, (t_imgs, _) in tqdm.tqdm(enumerate(target_loader_iter)):
             try:
-                s_imgs, s_labels = source_loader_iter.next()
+                # s_imgs, s_labels = source_loader_iter.next()
+                s_imgs, s_labels = next(source_loader_iter)
             except:
                 source_loader_iter = iter(source_loader)
-                s_imgs, s_labels = source_loader_iter.next()
+                # s_imgs, s_labels = source_loader_iter.next()
+                s_imgs, s_labels = next(source_loader_iter)
 
             if s_imgs.size(0) != args.batch_size or t_imgs.size(0) != args.batch_size:
                 continue
