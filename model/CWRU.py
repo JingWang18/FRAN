@@ -94,7 +94,7 @@ class Feature(nn.Module):
     def forward(self, x, is_deconv=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # x = self.channel_1(x)
-        x = self.SpatialGate(x)
+        # x = self.SpatialGate(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         x = self.SpatialGate(x)
         # x = self.channel_2(x)
