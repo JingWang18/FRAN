@@ -96,6 +96,7 @@ class Feature(nn.Module):
         # x = self.channel_1(x)
         x = self.SpatialGate(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
+        x = self.SpatialGate(x)
         # x = self.channel_2(x)
         return x
 
@@ -114,7 +115,7 @@ class Predictor(nn.Module):
 
     def forward(self, x, reverse=False):
         x = x.view(x.size(0), 64*300)
-        # x = F.dropout(x, training=self.training, p=self.prob)
+        x = F.dropout(x, training=self.training, p=self.prob)
         x = self.relu(self.bn1_fc(self.fc1(x)))
         x = self.fc3(x)
         return x
