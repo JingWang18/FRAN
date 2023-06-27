@@ -78,14 +78,14 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv1 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=1)
-        self.bn1 = nn.BatchNorm1d(32)
-        self.conv21 = nn.Conv1d(32, 64, kernel_size=4, stride=1, padding=2)
-        self.bn21 = nn.BatchNorm1d(64)
+        self.conv1 = nn.Conv1d(1, 8, kernel_size=4, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm1d(8)
+        self.conv21 = nn.Conv1d(8, 16, kernel_size=4, stride=1, padding=2)
+        self.bn21 = nn.BatchNorm1d(16)
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
-        self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
+        self.channel_1 = ChannelGate(8, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
@@ -102,7 +102,7 @@ class Feature(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, prob=0.5):
         super(Predictor, self).__init__()
-        self.fc1 = nn.Linear(64*300, 1000)
+        self.fc1 = nn.Linear(16*300, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
         self.fc3 = nn.Linear(1000, 3)
         self.bn_fc3 = nn.BatchNorm1d(3)
