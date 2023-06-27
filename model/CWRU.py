@@ -71,7 +71,7 @@ class SpatialGate(nn.Module):
     def forward(self, x):
         x_compress = self.compress(x)
         x_out = self.spatial(x_compress)
-        scale = F.sigmoid(10*x_out) # broadcasting
+        scale = F.sigmoid(x_out) # broadcasting
         return x * scale
 
 
