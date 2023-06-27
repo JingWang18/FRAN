@@ -65,7 +65,7 @@ class ChannelPool(nn.Module):
 class SpatialGate(nn.Module):
     def __init__(self):
         super(SpatialGate, self).__init__()
-        kernel_size = 4
+        kernel_size = 5
         self.compress = ChannelPool()
         self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
     def forward(self, x):
