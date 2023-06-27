@@ -161,8 +161,8 @@ if __name__ == "__main__":
     if args.GPU:
         netG.cuda()
         netF.cuda()
-    netG.apply(weights_init)
-    netF.apply(weights_init)
+    # netG.apply(weights_init)
+    # netF.apply(weights_init)
 
     print ('Training using Adam')
     opt_g = optim.Adam(netG.parameters(), lr=args.lr, weight_decay=0.0005)
