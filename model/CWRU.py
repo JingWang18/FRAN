@@ -113,7 +113,7 @@ class Predictor(nn.Module):
         self.lambd = lambd
 
     def forward(self, x, reverse=False):
-        x = x.view(x.size(0), 64*300)
+        x = x.view(x.size(0), 16*300)
         x = F.dropout(x, training=self.training, p=self.prob)
         x = self.relu(self.bn1_fc(self.fc1(x)))
         x = self.fc3(x)
