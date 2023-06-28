@@ -68,10 +68,12 @@ class SpatialGate(nn.Module):
         kernel_size = 3
         self.compress = ChannelPool()
         self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
-    def forward(self, x):
+    def forward(self, x, is_target=False):
         x_compress = self.compress(x)
         x_out = self.spatial(x_compress)
         scale = F.sigmoid(x_out) # broadcasting
+        if is_target:
+            scale = torch.ones_like(scale).cuda() - scale
         return x * scale
 
 
@@ -91,10 +93,10 @@ class Feature(nn.Module):
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
-    def forward(self, x, is_deconv=False):
+    def forward(self, x, is_target=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # x = self.channel_1(x)
-        x = self.SpatialGate(x)
+        x = self.SpatialGate(x, is_target)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         # x = self.SpatialGate(x)
         # x = self.channel_2(x)
