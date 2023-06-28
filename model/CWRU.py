@@ -24,7 +24,7 @@ class ChannelGate(nn.Module):
             nn.Linear(gate_channels // reduction_ratio, gate_channels)
             )
         self.pool_types = pool_types
-    def forward(self, x): # x.shape -> [64, 64, 300]
+    def forward(self, x, is_target=False): # x.shape -> [64, 64, 300]
         channel_att_sum = None
         for pool_type in self.pool_types:
             if pool_type=='avg':
@@ -39,7 +39,11 @@ class ChannelGate(nn.Module):
             else:
                 channel_att_sum = channel_att_sum + channel_att_raw
 
-        scale = F.sigmoid(10*channel_att_sum).unsqueeze(2).expand_as(x) # channel_att_sum.shape -> [64, 64]
+        scale = F.sigmoid(channel_att_sum).unsqueeze(2).expand_as(x) # channel_att_sum.shape -> [64, 64]
+
+        if is_target:
+            scale = torch.ones_like(scale).cuda() - scale
+
         return x * scale
 
 class BasicConv(nn.Module):
@@ -87,7 +91,7 @@ class Feature(nn.Module):
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
-        self.channel_1 = ChannelGate(64, pool_types=['avg', 'max'])
+        self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
@@ -95,8 +99,8 @@ class Feature(nn.Module):
 
     def forward(self, x, is_target=False):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
-        # x = self.channel_1(x)
-        x = self.SpatialGate(x, is_target)
+        x = self.channel_1(x)
+        # x = self.SpatialGate(x, is_target)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         # x = self.SpatialGate(x)
         # x = self.channel_2(x)
