@@ -211,12 +211,20 @@ if __name__ == "__main__":
             # get classification results
             s_logit = netF(s_bottleneck)
             t_logit = netF(t_bottleneck)
-            t_logit_entropy = HLoss(t_bottleneck)
-            s_logit_entropy = HLoss(s_bottleneck)
+            # t_logit_entropy = HLoss(t_bottleneck)
+            # s_logit_entropy = HLoss(s_bottleneck)
 
             # get source domain classification error
             s_cls_loss = get_cls_loss(s_logit, s_labels)
-            
+
+            # for n, p in netF.bottle.named_parameters():
+            #     if n.find('bias') == -1:
+            #         mask_ = ((1 - masks_old)).view(-1, 1).expand(256, 2048).cuda()
+            #         p.grad.data *= mask_
+            #     else:  # no bias here
+            #         mask_ = ((1 - masks_old)).squeeze().cuda()
+            #         p.grad.data *= mask_
+
             # compute entropy loss
             t_prob = F.softmax(t_logit)
             t_entropy_loss = get_entropy_loss(t_prob)
@@ -225,7 +233,8 @@ if __name__ == "__main__":
             MMD = MMDLoss(s_bottleneck, t_bottleneck)
             
             # Full loss function
-            loss = s_cls_loss + t_entropy_loss + args.lambda_val*MMD - args.thres_rec*(t_logit_entropy +s_logit_entropy)
+            # loss = s_cls_loss + t_entropy_loss + args.lambda_val*MMD - args.thres_rec*(t_logit_entropy +s_logit_entropy)
+            loss = s_cls_loss + t_entropy_loss
             
             loss.backward()
             
