@@ -44,7 +44,7 @@ parser.add_argument("--result", default='record')
 parser.add_argument("--save", default=False, type=bool)
 parser.add_argument("--lambda_val", default=1.0, type=float)
 parser.add_argument("--entropy_thres", default=0.00000001, type=float)
-parser.add_argument('--thres_rec', type=float, default=0.0001, help='coefficient for reconstruction loss')
+parser.add_argument('--thres_rec', type=float, default=0.0, help='coefficient for reconstruction loss') # 0.0001
 parser.add_argument("--optimizer", default='Adam', type=str)
 parser.add_argument('--GPU', type=bool, default=True,
                     help='enable train on GPU or not, default is False')
@@ -211,19 +211,12 @@ if __name__ == "__main__":
             # get classification results
             s_logit = netF(s_bottleneck)
             t_logit = netF(t_bottleneck)
-            # t_logit_entropy = HLoss(t_bottleneck)
-            # s_logit_entropy = HLoss(s_bottleneck)
+
+            t_logit_entropy = HLoss(t_bottleneck)
+            s_logit_entropy = HLoss(s_bottleneck)
 
             # get source domain classification error
             s_cls_loss = get_cls_loss(s_logit, s_labels)
-
-            # for n, p in netF.bottle.named_parameters():
-            #     if n.find('bias') == -1:
-            #         mask_ = ((1 - masks_old)).view(-1, 1).expand(256, 2048).cuda()
-            #         p.grad.data *= mask_
-            #     else:  # no bias here
-            #         mask_ = ((1 - masks_old)).squeeze().cuda()
-            #         p.grad.data *= mask_
 
             # compute entropy loss
             t_prob = F.softmax(t_logit)
@@ -233,14 +226,13 @@ if __name__ == "__main__":
             MMD = MMDLoss(s_bottleneck, t_bottleneck)
             
             # Full loss function
-            # loss = s_cls_loss + t_entropy_loss + args.lambda_val*MMD - args.thres_rec*(t_logit_entropy +s_logit_entropy)
-            loss = s_cls_loss + t_entropy_loss
+            loss = s_cls_loss + t_entropy_loss + args.lambda_val*MMD - args.thres_rec*(t_logit_entropy + s_logit_entropy)
             
             loss.backward()
             
             if (i+1) % 50 == 0:
-                # print ("cls_loss: %.4f, MMD:  %.4f, t_HLoss:  %.4f, s_HLoss:  %.4f" % (s_cls_loss.item(), args.lambda_val*MMD.item(), args.thres_rec*t_logit_entropy.item(), args.thres_rec*s_logit_entropy.item()))
-                print("cls_loss: %.4f" %s_cls_loss.item())
+                print ("cls_loss: %.4f, MMD:  %.4f, t_HLoss:  %.4f, s_HLoss:  %.4f" % (s_cls_loss.item(), args.lambda_val*MMD.item(), args.thres_rec*t_logit_entropy.item(), args.thres_rec*s_logit_entropy.item()))
+
             opt_g.step()
             opt_f.step()
         print('Training time:', time.time()-tic)
