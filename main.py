@@ -239,8 +239,8 @@ if __name__ == "__main__":
             loss.backward()
             
             if (i+1) % 50 == 0:
-                print ("cls_loss: %.4f, MMD:  %.4f, t_HLoss:  %.4f, s_HLoss:  %.4f" % (s_cls_loss.item(), args.lambda_val*MMD.item(), args.thres_rec*t_logit_entropy.item(), args.thres_rec*s_logit_entropy.item()))
-            
+                # print ("cls_loss: %.4f, MMD:  %.4f, t_HLoss:  %.4f, s_HLoss:  %.4f" % (s_cls_loss.item(), args.lambda_val*MMD.item(), args.thres_rec*t_logit_entropy.item(), args.thres_rec*s_logit_entropy.item()))
+                print("cls_loss: %.4f" %s_cls_loss.item())
             opt_g.step()
             opt_f.step()
         print('Training time:', time.time()-tic)
