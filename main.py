@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
             # apply feature extractor to input images
             s_bottleneck = netG(s_imgs, is_target=False)
-            t_bottleneck = netG(t_imgs, is_target=True)
+            t_bottleneck = netG(t_imgs, is_target=False)
 
             # get classification results
             s_logit = netF(s_bottleneck)
@@ -245,7 +245,7 @@ if __name__ == "__main__":
         for (t_imgs, t_labels) in t_loader:
             if args.GPU:
                 t_imgs = Variable(t_imgs.cuda())
-            t_bottleneck = netG(t_imgs, is_target=True)
+            t_bottleneck = netG(t_imgs, is_target=False)
             t_logit = netF(t_bottleneck)
             pred = F.softmax(t_logit)
             pred = pred.data.cpu().numpy()
