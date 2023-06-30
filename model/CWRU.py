@@ -71,7 +71,7 @@ class SpatialGate(nn.Module):
         super(SpatialGate, self).__init__()
         kernel_size = 3
         self.compress = ChannelPool()
-        self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
+        self.spatial = BasicConv(32, 32, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
     def forward(self, x, is_target=False):
         # x_compress = self.compress(x)
         x_out = self.spatial(x)
