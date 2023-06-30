@@ -73,8 +73,8 @@ class SpatialGate(nn.Module):
         self.compress = ChannelPool()
         self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
     def forward(self, x, is_target=False):
-        x_compress = self.compress(x)
-        x_out = self.spatial(x_compress)
+        # x_compress = self.compress(x)
+        x_out = self.spatial(x)
         scale = F.sigmoid(x_out) # broadcasting
         if is_target:
             scale = torch.ones_like(scale).cuda() - scale
