@@ -110,7 +110,7 @@ class Feature(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, prob=0.5):
         super(Predictor, self).__init__()
-        self.fc1 = nn.Linear(64*300, 1000)
+        self.fc1 = nn.Linear(64*300*2, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
         self.fc3 = nn.Linear(1000, 3)
         self.bn_fc3 = nn.BatchNorm1d(3)
@@ -121,7 +121,7 @@ class Predictor(nn.Module):
         self.lambd = lambd
 
     def forward(self, x, reverse=False):
-        x = x.view(x.size(0), 64*300)
+        x = x.view(x.size(0), 64*300*2)
         x = F.dropout(x, training=self.training, p=self.prob)
         x = self.relu(self.bn1_fc(self.fc1(x)))
         x = self.fc3(x)
