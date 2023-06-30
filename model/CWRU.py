@@ -75,7 +75,7 @@ class SpatialGate(nn.Module):
     def forward(self, x, is_target=False):
         x_compress = self.compress(x)
         x_out = self.spatial(x_compress)
-        scale = F.sigmoid(x_out) # broadcasting
+        scale = F.softmax(x_out) # broadcasting
         if is_target:
             scale = torch.ones_like(scale).cuda() - scale
         return x * scale
@@ -100,8 +100,8 @@ class Feature(nn.Module):
     def forward(self, x, is_target=False):
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         x = self.conv1(x)
-        x = self.channel_1(x)
-        # x = self.SpatialGate(x, is_target)
+        # x = self.channel_1(x)
+        x = self.SpatialGate(x, is_target)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         # x = self.SpatialGate(x)
         # x = self.channel_2(x)
