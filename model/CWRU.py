@@ -76,7 +76,7 @@ class SpatialGate(nn.Module):
         self.spatial = BasicConv(3, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
 
     def sigmoid(self, x):
-        return 1/(1+torch.exp(-x))
+        return 1/(1+torch.exp(-1e5*x))
 
     def forward(self, x, is_target=False):
         x_compress = self.compress(x)
