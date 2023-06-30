@@ -98,6 +98,7 @@ class Feature(nn.Module):
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
+        x= F.normalize(x)
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # x = self.channel_1(x)
         x = self.SpatialGate(x, is_target)
