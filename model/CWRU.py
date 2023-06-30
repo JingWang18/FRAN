@@ -81,7 +81,6 @@ class SpatialGate(nn.Module):
     def forward(self, x, is_target=False):
         x_compress = self.compress(x)
         x_out = self.spatial(x_compress)
-        pdb.set_trace()
         scale = self.sigmoid(x_out) # broadcasting
         if is_target:
             scale = torch.ones_like(scale).cuda() - scale
