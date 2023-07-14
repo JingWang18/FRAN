@@ -1,7 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from pytorch_wavelets import DWT1DForward, DWT1DInverse
 import pdb
+
 
 def logsumexp_2d(tensor):
     tensor_flatten = tensor.view(tensor.size(0), tensor.size(1), -1)
@@ -67,7 +70,6 @@ class ChannelPool(nn.Module):
         return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
 
 
-
 class SpatialGate(nn.Module):
     def __init__(self):
         super(SpatialGate, self).__init__()
@@ -105,9 +107,11 @@ class Feature(nn.Module):
 
     def forward(self, x, is_target=False):
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+        x = DWT1DForward(wave='db6', J=3)(x)
+        pdb.set_trace()
         x = self.conv1(x)
-        # x = self.channel_1(x)
-        x = self.SpatialGate(x, is_target)
+        x = self.channel_1(x)
+        # x = self.SpatialGate(x, is_target)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         # x = self.SpatialGate(x)
         # x = self.channel_2(x)
