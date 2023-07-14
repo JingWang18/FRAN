@@ -108,10 +108,11 @@ class Feature(nn.Module):
     def forward(self, x, is_target=False):
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
+        t = x
         dwt = DWT1DForward(wave='db6', J=3).cuda()
         x = dwt(x)
         pdb.set_trace()
-        
+
         x = self.conv1(x)
         x = self.channel_1(x)
         # x = self.SpatialGate(x, is_target)
