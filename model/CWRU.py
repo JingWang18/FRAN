@@ -112,7 +112,6 @@ class Feature(nn.Module):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
         x = self.SpatialGate(x)
-        pdb.set_trace()
 
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
@@ -132,7 +131,7 @@ class Predictor(nn.Module):
 
     def set_lambda(self, lambd):
         self.lambd = lambd
-        
+
     def forward(self, x, reverse=False):
         x = x.view(x.size(0), 64*300*2)
         x = F.dropout(x, training=self.training, p=self.prob)
