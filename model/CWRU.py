@@ -36,17 +36,13 @@ class ChannelGate(nn.Module):
             elif pool_type=='max':
                 max_pool = F.max_pool1d(x, kernel_size=x.size(2), stride=x.size(2))
                 channel_att_raw = self.mlp(max_pool)
-
             if channel_att_sum is None:
                 channel_att_sum = channel_att_raw
             else:
                 channel_att_sum = channel_att_sum + channel_att_raw
-
         scale = F.sigmoid(channel_att_sum).unsqueeze(2).expand_as(x) # channel_att_sum.shape -> [64, 64]
-
         if is_target:
             scale = torch.ones_like(scale).cuda() - scale
-
         return x * scale
 
 class BasicConv(nn.Module):
@@ -56,7 +52,6 @@ class BasicConv(nn.Module):
         self.conv = nn.Conv1d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias)
         self.bn = nn.BatchNorm1d(out_planes,eps=1e-5, momentum=0.01, affine=True) if bn else None
         self.relu = nn.ReLU() if relu else None
-
     def forward(self, x):
         x = self.conv(x)
         if self.bn is not None:
@@ -67,15 +62,15 @@ class BasicConv(nn.Module):
 
 class ChannelPool(nn.Module):
     def forward(self, x):
-        return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
-
+        # return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
+        return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
 
 class SpatialGate(nn.Module):
     def __init__(self):
         super(SpatialGate, self).__init__()
         kernel_size = 3
         self.compress = ChannelPool()
-        self.spatial = BasicConv(3, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
+        self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
 
     def sigmoid(self, x):
         return 1./(1.+torch.exp(-x))
@@ -94,7 +89,6 @@ class Feature(nn.Module):
         super(Feature, self).__init__()
         self.conv1 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=1)
         self.conv2 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=1)
-
         self.bn1 = nn.BatchNorm1d(32)
         self.conv21 = nn.Conv1d(32, 64, kernel_size=4, stride=1, padding=2)
         self.bn21 = nn.BatchNorm1d(64)
@@ -115,15 +109,14 @@ class Feature(nn.Module):
         # x = dwt(x)
         # x_1 = x[1][0]
         # x_2 = x[1][1]
-
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         x = self.channel_1(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
 
-
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
         # x = self.channel_2(x)
+
         return x
 
 class Predictor(nn.Module):
