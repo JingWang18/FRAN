@@ -62,15 +62,15 @@ class BasicConv(nn.Module):
 
 class ChannelPool(nn.Module):
     def forward(self, x):
-        # return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
-        return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
+        return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
+        # return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
 
 class SpatialGate(nn.Module):
     def __init__(self):
         super(SpatialGate, self).__init__()
         kernel_size = 3
         self.compress = ChannelPool()
-        self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
+        self.spatial = BasicConv(3, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
 
     def sigmoid(self, x):
         return 1./(1.+torch.exp(-x))
