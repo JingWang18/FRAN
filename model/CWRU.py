@@ -81,7 +81,7 @@ class SpatialGate(nn.Module):
         scale = self.sigmoid(x_out) # broadcasting
         if is_target:
             scale = torch.ones_like(scale).cuda() - scale
-        return x * scale
+        return x_compress * scale
 
 
 class Feature(nn.Module):
@@ -110,8 +110,9 @@ class Feature(nn.Module):
         # x_1 = x[1][0]
         # x_2 = x[1][1]
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
-        x = self.SpatialGate(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
+        x = self.SpatialGate(x)
+        pdb.set_trace()
 
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
