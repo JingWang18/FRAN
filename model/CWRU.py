@@ -114,12 +114,12 @@ class Feature(nn.Module):
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
         x,_ = self.dwt_1(x)
-        x = self.maxpool(self.bn1(self.conv1(x)))
+        x = self.maxpool(self.conv1(x))
         # x = self.channel_1(x)
         x,_ = self.dwt_2(x)
-        x = self.maxpool(self.bn21(self.conv21(x)))
+        x = self.maxpool(self.conv21(x))
 
-        x = self.SpatialGate(x)
+        # x = self.SpatialGate(x)
 
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
