@@ -116,7 +116,8 @@ class Feature(nn.Module):
         x_0 = x
         x,_ = self.dwt_1(x)
         x = self.maxpool(self.conv1(x)+x_0)
-    
+        pdb.set_trace()
+
         x_1 = x
         # x = self.channel_1(x)
         x,_ = self.dwt_2(x)
