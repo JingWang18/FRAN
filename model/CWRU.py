@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import pywt
 import pytorch_wavelets.dwt.lowlevel as lowlevel
 
+from pytorch_wavelets import DWT1DForward
 import pdb
 
 
@@ -104,17 +105,15 @@ class Feature(nn.Module):
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
-        wave = pywt.Wavelet('db1')
-        filts = lowlevel.prep_filt_afb1d(wave.dec_lo, wave.dec_hi)
-        pdb.set_trace()
+        # wave = pywt.Wavelet('db1')
+        # filts = lowlevel.prep_filt_afb1d(wave.dec_lo, wave.dec_hi)
 
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
-        # x_0 = x
-        # dwt = DWT1DForward(wave='db6', J=2).cuda()
-        # x = dwt(x)
-        # x_1 = x[1][0]
-        # x_2 = x[1][1]
+        x_0 = x
+        dwt = DWT1DForward(wave='db6', J=1).cuda()
+        x = dwt(x)
+        pdb.set_trace()
         x = self.relu(self.bn1(self.conv1(x)))
         x = self.channel_1(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
