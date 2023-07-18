@@ -90,10 +90,11 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv1 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
-        self.conv2 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
+        self.conv11 = nn.Conv1d(1, 1, kernel_size=5, stride=1, padding=2)
+        self.conv12 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
         self.bn1 = nn.BatchNorm1d(32)
-        self.conv21 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
+        self.conv21 = nn.Conv1d(32, 32, kernel_size=5, stride=1, padding=2)
+        self.conv22 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
         self.bn21 = nn.BatchNorm1d(64)
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
@@ -116,11 +117,13 @@ class Feature(nn.Module):
         x_0 = x
         x,_ = self.dwt_1(x)
         x = self.maxpool(self.conv1(x)+x_0)
+        x = self.conv2(x)
 
         x_1 = x
         # x = self.channel_1(x)
         x,_ = self.dwt_2(x)
         x = self.maxpool(self.conv21(x)+x_1)
+        x = self.conv22(x)
 
         # x = self.SpatialGate(x)
 
