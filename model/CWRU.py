@@ -116,8 +116,8 @@ class Feature(nn.Module):
         # Wavelet transform with 3 levels
         x_0 = x
         x,_ = self.dwt_1(x)
-        x = self.maxpool(self.conv1(x)+x_0)
-        x = self.conv2(x)
+        x = self.maxpool(self.conv11(x)+x_0)
+        x = self.conv12(x)
 
         x_1 = x
         # x = self.channel_1(x)
