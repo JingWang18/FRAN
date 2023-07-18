@@ -95,7 +95,7 @@ class Feature(nn.Module):
         self.bn1 = nn.BatchNorm1d(32)
         self.conv21 = nn.Conv1d(32, 32, kernel_size=5, stride=1, padding=2)
         self.conv22 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
-        self.bn21 = nn.BatchNorm1d(64)
+        self.bn2 = nn.BatchNorm1d(64)
         self.relu = nn.Sigmoid()
         self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)
 
@@ -117,13 +117,13 @@ class Feature(nn.Module):
         x_0 = x
         x,_ = self.dwt_1(x)
         x = self.maxpool(self.conv11(x)+x_0)
-        x = self.conv12(x)
+        x = self.relu(self.bn1(self.conv12(x)))
 
         x_1 = x
         # x = self.channel_1(x)
         x,_ = self.dwt_2(x)
         x = self.maxpool(self.conv21(x)+x_1)
-        x = self.conv22(x)
+        x = self.relu(self.bn2(self.conv22(x)))
 
         # x = self.SpatialGate(x)
 
