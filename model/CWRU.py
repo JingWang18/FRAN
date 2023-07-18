@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import pywt
 from pytorch_wavelets import DWT1DForward, DWT1DInverse
 import pdb
 
@@ -102,6 +103,8 @@ class Feature(nn.Module):
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
+        wave = pywt.Wavelet('db1')
+        pdb.set_trace()
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
         # x_0 = x
