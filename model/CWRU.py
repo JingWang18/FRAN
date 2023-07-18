@@ -117,13 +117,13 @@ class Feature(nn.Module):
         x_0 = x
         x,_ = self.dwt_1(x)
         x = self.maxpool(self.conv11(x)+x_0)
-        x = self.relu(self.bn1(self.conv12(x)))
+        x = self.bn1(self.conv12(x))
 
         x_1 = x
         # x = self.channel_1(x)
         x,_ = self.dwt_2(x)
         x = self.maxpool(self.conv21(x)+x_1)
-        x = self.relu(self.bn2(self.conv22(x)))
+        x = self.bn2(self.conv22(x))
 
         # x = self.SpatialGate(x)
 
