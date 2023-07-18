@@ -101,6 +101,9 @@ class Feature(nn.Module):
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
+        self.dwt_1 = DWT1DForward(wave='db6', J=1).cuda()
+        self.dwt_2 = DWT1DForward(wave='db6', J=1).cuda()
+
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
@@ -110,13 +113,12 @@ class Feature(nn.Module):
 
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
-        x_0 = x
-        dwt = DWT1DForward(wave='db6', J=1).cuda()
-        x = dwt(x)
-        pdb.set_trace()
-        x = self.relu(self.bn1(self.conv1(x)))
-        x = self.channel_1(x)
+        x,_ = self.dwt_1(x)
+        x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+        # x = self.channel_1(x)
+        x,_ = self.dwt_2(x)
         x = self.maxpool(self.relu(self.bn21(self.conv21(x))))
+
         x = self.SpatialGate(x)
 
         # x = self.SpatialGate(x, is_target)
@@ -128,7 +130,7 @@ class Feature(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, prob=0.5):
         super(Predictor, self).__init__()
-        self.fc1 = nn.Linear(300*2*2, 1000)
+        self.fc1 = nn.Linear(300*2, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
         self.fc3 = nn.Linear(1000, 3)
         self.bn_fc3 = nn.BatchNorm1d(3)
@@ -139,7 +141,7 @@ class Predictor(nn.Module):
         self.lambd = lambd
 
     def forward(self, x, reverse=False):
-        x = x.view(x.size(0), 300*2*2)
+        x = x.view(x.size(0), 300*2)
         x = F.dropout(x, training=self.training, p=self.prob)
         x = self.relu(self.bn1_fc(self.fc1(x)))
         x = self.fc3(x)
