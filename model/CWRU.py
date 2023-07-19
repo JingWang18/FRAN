@@ -91,7 +91,7 @@ class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
         self.linear_1 = nn.Linear(360000, 600)
-        self.linear_2 = nn.Linear(9000, 300)
+        self.linear_2 = nn.Linear(90000, 300)
 
         self.conv11 = nn.Conv1d(1, 12, kernel_size=5, stride=1, padding=2)
         self.conv12 = nn.Conv1d(12, 12, kernel_size=5, stride=1, padding=2)
