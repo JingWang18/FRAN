@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import dtcwt
+from pytorch_wavelets import DWT1DForward
 
 import pdb
 
@@ -88,9 +89,6 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.linear_1 = nn.Linear(360000, 600)
-        self.linear_2 = nn.Linear(90000, 300)
-
         self.conv11 = nn.Conv1d(1, 12, kernel_size=5, stride=1, padding=2)
         self.conv12 = nn.Conv1d(12, 12, kernel_size=5, stride=1, padding=2)
         self.bn1 = nn.BatchNorm1d(12)
@@ -103,13 +101,13 @@ class Feature(nn.Module):
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
-        self.transform = dtcwt.Transform1d().cuda()
+        self.transform = DWT1DForward(wave='db6', J=2).cuda()
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
         x_0 = x
-        z = self.transform.forward(x, nlevels=2)
+        zl, zh = self.transform(x)
         pdb.set_trace()
 
         x = self.maxpool(self.bn1(self.conv11(x_0))) + z_1
