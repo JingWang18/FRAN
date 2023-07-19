@@ -2,10 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import pywt
-import pytorch_wavelets.dwt.lowlevel as lowlevel
+import dtcwt
 
-from pytorch_wavelets import DWT1DForward, DTCWTForward
 import pdb
 
 
@@ -105,32 +103,14 @@ class Feature(nn.Module):
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
-        # self.dwt_1 = DWT1DForward(wave='db6', J=1).cuda()
-        # self.dwt_2 = DWT1DForward(wave='db6', J=1).cuda()
-
-        self.dwt_1 = DTCWTForward(J=2, biort='near_sym_b', qshift='qshift_b').cuda()
-
+        self.transform = dtcwt.Transform1d().cuda()
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
-        # wave = pywt.Wavelet('db1')
-        # filts = lowlevel.prep_filt_afb1d(wave.dec_lo, wave.dec_hi)
-
         x_0 = x
-
-        # Wavelet transform with 3 levels
-        # x = x.unsqueeze(3).expand(x.shape[0], x.shape[1], x.shape[2], x.shape[2])
-
-        _, z = self.dwt_1(x)
+        z = self.transform.forward(x, nlevels=2)
         pdb.set_trace()
-        # z[0] is the real part and z[1] is the imaginary part
-        # z[0] -> 64, 1, 6, 600, 600, 2 where 6 is 6 orientations and 2 is the real and imaginary parts
-        z_1, z_2 = z[0], z[1] # z_n n is the level index
-        z_1 = z_1.view(64*12,360000)
-        z_2 = z_2.view(64*12,90000)
-        z_1 = self.linear_1(z_1).view(64,12,600)
-        z_2 = self.linear_2(z_2).view(64,12,300)
 
         x = self.maxpool(self.bn1(self.conv11(x_0))) + z_1
         x = self.maxpool(self.bn2(self.conv12(x))) + z_2
