@@ -90,14 +90,17 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv11 = nn.Conv2d(1, 12, kernel_size=5, stride=1, padding=2)
-        self.conv12 = nn.Conv2d(12, 12, kernel_size=5, stride=1, padding=2)
-        self.bn1 = nn.BatchNorm2d(12)
-        self.conv21 = nn.Conv2d(32, 32, kernel_size=5, stride=1, padding=2)
-        self.conv22 = nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2)
-        self.bn2 = nn.BatchNorm2d(12)
+        self.linear_1 = nn.Linear(360000, 600)
+        self.linear_2 = nn.Linear(9000, 300)
+
+        self.conv11 = nn.Conv1d(1, 12, kernel_size=5, stride=1, padding=2)
+        self.conv12 = nn.Conv1d(12, 12, kernel_size=5, stride=1, padding=2)
+        self.bn1 = nn.BatchNorm1d(12)
+        self.conv21 = nn.Conv1d(32, 32, kernel_size=5, stride=1, padding=2)
+        self.conv22 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
+        self.bn2 = nn.BatchNorm1d(12)
         self.relu = nn.Sigmoid()
-        self.maxpool = nn.MaxPool2d(stride=2, kernel_size=2)  # average
+        self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # average
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
@@ -122,9 +125,10 @@ class Feature(nn.Module):
         # z[0] is the real part and z[1] is the imaginary part
         # z[0] -> 64, 1, 6, 600, 600, 2 where 6 is 6 orientations and 2 is the real and imaginary parts
         z_1, z_2 = z[0], z[1] # z_n n is the level index
-        z_1 = z_1.view(64,12,600,600).unique(dim=0)
-        pdb.set_trace()
-        z_2 = z_2.view(64,12,300,300).unique(dim=0)
+        z_1 = z_1.view(64*12,360000)
+        z_2 = z_2.view(64*12,9000)
+        z_1 = self.linear_1(z_1).view(64,12,600)
+        z_2 = self.linear_2(z_2).view(64,12,300)
 
         x = self.maxpool(self.bn1(self.conv11(x_0))) + z_1
         x = self.maxpool(self.bn2(self.conv12(x))) + z_2
