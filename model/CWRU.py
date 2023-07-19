@@ -117,10 +117,10 @@ class Feature(nn.Module):
         # wave = pywt.Wavelet('db1')
         # filts = lowlevel.prep_filt_afb1d(wave.dec_lo, wave.dec_hi)
 
-        # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+        x_0 = x
+        
         # Wavelet transform with 3 levels
         x = x.unsqueeze(3).expand(x.shape[0], x.shape[1], x.shape[2], x.shape[2])
-        x_0 = x
         _, z = self.dwt_1(x)
         # z[0] is the real part and z[1] is the imaginary part
         # z[0] -> 64, 1, 6, 600, 600, 2 where 6 is 6 orientations and 2 is the real and imaginary parts
