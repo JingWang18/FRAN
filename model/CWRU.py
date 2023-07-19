@@ -118,10 +118,12 @@ class Feature(nn.Module):
         # filts = lowlevel.prep_filt_afb1d(wave.dec_lo, wave.dec_hi)
 
         x_0 = x
-        
+
         # Wavelet transform with 3 levels
-        x = x.unsqueeze(3).expand(x.shape[0], x.shape[1], x.shape[2], x.shape[2])
+        # x = x.unsqueeze(3).expand(x.shape[0], x.shape[1], x.shape[2], x.shape[2])
+
         _, z = self.dwt_1(x)
+        pdb.set_trace()
         # z[0] is the real part and z[1] is the imaginary part
         # z[0] -> 64, 1, 6, 600, 600, 2 where 6 is 6 orientations and 2 is the real and imaginary parts
         z_1, z_2 = z[0], z[1] # z_n n is the level index
