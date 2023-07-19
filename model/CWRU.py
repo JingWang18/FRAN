@@ -126,7 +126,7 @@ class Feature(nn.Module):
         # z[0] -> 64, 1, 6, 600, 600, 2 where 6 is 6 orientations and 2 is the real and imaginary parts
         z_1, z_2 = z[0], z[1] # z_n n is the level index
         z_1 = z_1.view(64*12,360000)
-        z_2 = z_2.view(64*12,9000)
+        z_2 = z_2.view(64*12,90000)
         z_1 = self.linear_1(z_1).view(64,12,600)
         z_2 = self.linear_2(z_2).view(64,12,300)
 
