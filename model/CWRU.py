@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import pywt
 import pytorch_wavelets.dwt.lowlevel as lowlevel
 
-from pytorch_wavelets import DWT1DForward, DTCWT1DForward
+from pytorch_wavelets import DWT1DForward, DTCWTForward
 import pdb
 
 
@@ -105,7 +105,7 @@ class Feature(nn.Module):
         # self.dwt_1 = DWT1DForward(wave='db6', J=1).cuda()
         # self.dwt_2 = DWT1DForward(wave='db6', J=1).cuda()
 
-        self.dwt_1 = DTCWT1DForward(J=2, biort='near_sym_b', qshift='qshift_b').cuda()
+        self.dwt_1 = DTCWTForward(J=2, biort='near_sym_b', qshift='qshift_b').cuda()
 
         # self.channel_1 = ChannelGate(32, pool_types=['max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
@@ -116,7 +116,7 @@ class Feature(nn.Module):
 
         # x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         # Wavelet transform with 3 levels
-        x_0 = x
+        x = x.unsqueeze(3).expand(x.shape[0], x.shape[1], x.shape[2], x.shape[2])
         x_re, x_im = self.dwt_1(x)
         pdb.set_trace()
         x = self.maxpool(self.conv11(x)+x_0)
