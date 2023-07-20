@@ -104,7 +104,7 @@ class Feature(nn.Module):
 
         self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # max is better than average
         self.avgpool = nn.AvgPool1d(stride=2, kernel_size=2)
-        self.relu = nn.Sigmoid()
+        self.relu = nn.ReLU()
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
