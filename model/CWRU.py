@@ -109,7 +109,7 @@ class Feature(nn.Module):
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
-        self.transform = DWT1DForward(wave='cmor6', J=3).cuda()
+        self.transform = DWT1DForward(wave='haar', J=3).cuda()
         self.channel_1 = ChannelGate(32, pool_types=['avg','max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
