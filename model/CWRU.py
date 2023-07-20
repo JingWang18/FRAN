@@ -102,7 +102,8 @@ class Feature(nn.Module):
         self.conv_time_3 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
         self.bn3 = nn.BatchNorm1d(64)
 
-        self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # average
+        self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # max is better than average
+        self.avgpool = nn.AvgPool1d(stride=2, kernel_size=2)
         self.relu = nn.Sigmoid()
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
@@ -122,8 +123,8 @@ class Feature(nn.Module):
         z2 = self.conv_freq_2(zh[1]) # 64, 32, 300
         z3 = self.conv_freq_3(zh[2]) # 64, 64, 150
 
-        x = self.maxpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
-        x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
+        x = self.avgpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
+        x = self.avgpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
         x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
         # x = self.SpatialGate(x)
