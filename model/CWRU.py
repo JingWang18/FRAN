@@ -89,13 +89,15 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv11 = nn.Conv1d(1, 12, kernel_size=5, stride=1, padding=2)
-        self.conv12 = nn.Conv1d(12, 12, kernel_size=5, stride=1, padding=2)
-        self.bn1 = nn.BatchNorm1d(12)
-        self.conv21 = nn.Conv1d(32, 32, kernel_size=5, stride=1, padding=2)
-        self.conv22 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
-        self.bn2 = nn.BatchNorm1d(12)
-        self.relu = nn.Sigmoid()
+        self.conv_freq_1 = nn.Conv1d(1, 32, kernel_size=6, stride=1, padding=0)
+        self.conv_freq_2 = nn.Conv1d(1, 64, kernel_size=9, stride=1, padding=0)
+
+        self.conv_time_1 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
+        self.bn1 = nn.BatchNorm1d(32)
+
+        self.conv_time_2 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
+        self.bn2 = nn.BatchNorm1d(64)
+
         self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # average
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
@@ -108,10 +110,16 @@ class Feature(nn.Module):
     def forward(self, x, is_target=False):
         x_0 = x
         zl, zh = self.transform(x)
-        pdb.set_trace()
+        z1 = self.conv_freq_1(zh[0]) # 64, 32, 600
+        z2 = self.conv_freq_2(zh[1]) # 64, 64, 300
+        # zh[0] -> 64,1,605
+        # zh[1] -> 64,1,308
+        # zh[2] -> 64,1,159
 
-        x = self.maxpool(self.bn1(self.conv11(x_0))) + z_1
-        x = self.maxpool(self.bn2(self.conv12(x))) + z_2
+
+        x = self.maxpool(self.bn1(self.conv_time_1(x_0))) + z1
+        pdb.set_trace()
+        x = self.maxpool(self.bn2(self.conv2(x))) + z2
 
         # x = self.SpatialGate(x)
 
