@@ -93,7 +93,7 @@ class Feature(nn.Module):
         self.conv_freq_2 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=2)
         self.conv_freq_3 = nn.Conv1d(1, 64, kernel_size=5, stride=1, padding=2)
 
-        self.conv_time_1 = nn.Conv1d(1, 16, kernel_size=4, stride=1, padding=1)
+        self.conv_time_1 = nn.Conv1d(1, 16, kernel_size=4, stride=1, padding=2)
         self.bn1 = nn.BatchNorm1d(16)
 
         self.conv_time_2 = nn.Conv1d(16, 32, kernel_size=4, stride=1, padding=2)
