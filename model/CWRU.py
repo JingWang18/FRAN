@@ -89,9 +89,9 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv_freq_1 = nn.Conv1d(1, 16, kernel_size=6, stride=1, padding=0)
-        self.conv_freq_2 = nn.Conv1d(1, 32, kernel_size=9, stride=1, padding=0)
-        self.conv_freq_3 = nn.Conv1d(1, 64, kernel_size=10, stride=1, padding=0)
+        self.conv_freq_1 = nn.Conv1d(1, 16, kernel_size=5, stride=1, padding=2)
+        self.conv_freq_2 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
+        self.conv_freq_3 = nn.Conv1d(1, 64, kernel_size=5, stride=1, padding=2)
 
         self.conv_time_1 = nn.Conv1d(1, 16, kernel_size=5, stride=1, padding=2)
         self.bn1 = nn.BatchNorm1d(16)
@@ -115,9 +115,9 @@ class Feature(nn.Module):
 
     def forward(self, x, is_target=False):
         x_0 = x
-        # zh[0] -> 64,1,605
-        # zh[1] -> 64,1,308
-        # zh[2] -> 64,1,159
+        # db: zh[0] -> 64,1,605    haar: 600
+        #     zh[1] -> 64,1,308          300
+        #     zh[2] -> 64,1,159          150
         zl, zh = self.transform(x)
         z1 = self.conv_freq_1(zh[0]) # 64, 16, 600
         z2 = self.conv_freq_2(zh[1]) # 64, 32, 300
