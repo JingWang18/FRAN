@@ -89,14 +89,14 @@ class SpatialGate(nn.Module):
 class Feature(nn.Module):
     def __init__(self):
         super(Feature, self).__init__()
-        self.conv_freq_1 = nn.Conv1d(1, 16, kernel_size=5, stride=1, padding=2)
-        self.conv_freq_2 = nn.Conv1d(1, 32, kernel_size=5, stride=1, padding=2)
+        self.conv_freq_1 = nn.Conv1d(1, 16, kernel_size=4, stride=1, padding=1)
+        self.conv_freq_2 = nn.Conv1d(1, 32, kernel_size=4, stride=1, padding=2)
         self.conv_freq_3 = nn.Conv1d(1, 64, kernel_size=5, stride=1, padding=2)
 
-        self.conv_time_1 = nn.Conv1d(1, 16, kernel_size=5, stride=1, padding=2)
+        self.conv_time_1 = nn.Conv1d(1, 16, kernel_size=4, stride=1, padding=1)
         self.bn1 = nn.BatchNorm1d(16)
 
-        self.conv_time_2 = nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2)
+        self.conv_time_2 = nn.Conv1d(16, 32, kernel_size=4, stride=1, padding=2)
         self.bn2 = nn.BatchNorm1d(32)
 
         self.conv_time_3 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
@@ -121,11 +121,11 @@ class Feature(nn.Module):
         zl, zh = self.transform(x)
         z1 = self.conv_freq_1(zh[0]) # 64, 16, 600
         z2 = self.conv_freq_2(zh[1]) # 64, 32, 300
-        z3 = self.conv_freq_3(zh[2]) # 64, 64, 150
+        # z3 = self.conv_freq_3(zh[2]) # 64, 64, 150
 
         x = self.maxpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
         x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
-        x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
+        # x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
         # x = self.SpatialGate(x)
 
@@ -134,7 +134,7 @@ class Feature(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, prob=0.1):
         super(Predictor, self).__init__()
-        self.fc1 = nn.Linear(64*150, 1000)
+        self.fc1 = nn.Linear(64*300, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
         self.fc3 = nn.Linear(1000, 3)
         self.bn_fc3 = nn.BatchNorm1d(3)
@@ -145,7 +145,7 @@ class Predictor(nn.Module):
         self.lambd = lambd
 
     def forward(self, x, reverse=False):
-        x = x.view(x.size(0), 64*150)
+        x = x.view(x.size(0), 64*300)
         x = F.dropout(x, training=self.training, p=self.prob)
         x = self.relu(self.bn1_fc(self.fc1(x)))
         x = self.fc3(x)
