@@ -64,8 +64,8 @@ class BasicConv(nn.Module):
 
 class ChannelPool(nn.Module):
     def forward(self, x):
-        # return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
-        return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
+        return torch.cat((torch.max(x,1)[0].unsqueeze(1), torch.mean(x,1).unsqueeze(1), torch.std(x,1).unsqueeze(1)), dim=1)
+        # return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
 
 class SpatialGate(nn.Module):
     def __init__(self):
@@ -110,7 +110,7 @@ class Feature(nn.Module):
         self.SpatialGate = SpatialGate()
 
         self.transform = DWT1DForward(wave='db6', J=3).cuda()
-        # self.channel_1 = ChannelGate(32, pool_types=['max'])
+        self.channel_1 = ChannelGate(32, pool_types=['avg','max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
     def forward(self, x, is_target=False):
@@ -125,9 +125,10 @@ class Feature(nn.Module):
 
         x = self.maxpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
         x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
+        x = self.channel_1(x)
         x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
-        x = self.SpatialGate(x)
+        # x = self.SpatialGate(x)
 
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
