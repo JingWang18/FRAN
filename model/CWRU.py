@@ -136,7 +136,7 @@ class Feature(nn.Module):
         return x
 
 class Predictor(nn.Module):
-    def __init__(self, prob=0.2):
+    def __init__(self, prob=0.1):
         super(Predictor, self).__init__()
         self.fc1 = nn.Linear(64*150, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
