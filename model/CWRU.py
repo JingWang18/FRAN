@@ -127,7 +127,7 @@ class Feature(nn.Module):
         x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
         x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
-        # x = self.SpatialGate(x)
+        x = self.SpatialGate(x)
 
         # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
