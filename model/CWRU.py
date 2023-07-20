@@ -109,17 +109,15 @@ class Feature(nn.Module):
 
     def forward(self, x, is_target=False):
         x_0 = x
-        zl, zh = self.transform(x)
-        z1 = self.conv_freq_1(zh[0]) # 64, 32, 600
-        z2 = self.conv_freq_2(zh[1]) # 64, 64, 300
         # zh[0] -> 64,1,605
         # zh[1] -> 64,1,308
         # zh[2] -> 64,1,159
-
+        zl, zh = self.transform(x)
+        z1 = self.conv_freq_1(zh[0]) # 64, 32, 600
+        z2 = self.conv_freq_2(zh[1]) # 64, 64, 300
 
         x = self.maxpool(self.bn1(self.conv_time_1(x_0))) + z1
-        pdb.set_trace()
-        x = self.maxpool(self.bn2(self.conv2(x))) + z2
+        x = self.maxpool(self.bn2(self.conv_time_2(x))) + z2
 
         # x = self.SpatialGate(x)
 
