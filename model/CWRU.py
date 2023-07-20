@@ -102,7 +102,7 @@ class Feature(nn.Module):
         self.conv_time_3 = nn.Conv1d(32, 64, kernel_size=5, stride=1, padding=2)
         self.bn3 = nn.BatchNorm1d(64)
 
-        self.maxpool = nn.AvgPool1d(stride=2, kernel_size=2)  # average
+        self.maxpool = nn.MaxPool1d(stride=2, kernel_size=2)  # average
         self.relu = nn.Sigmoid()
 
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
