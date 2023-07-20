@@ -31,7 +31,7 @@ parser.add_argument("--shuffle", default=True, type=bool)
 parser.add_argument("--num_workers", default=0)
 parser.add_argument("--epoch", default=150, type=int)
 parser.add_argument("--snapshot", default="")
-parser.add_argument("--lr", default=0.0005, type=float)
+parser.add_argument("--lr", default=0.0001, type=float)
 parser.add_argument("--class_num", default=3)
 parser.add_argument("--extract", default=True)
 parser.add_argument("--weight_L2norm", default=0.05)
@@ -43,7 +43,7 @@ parser.add_argument("--repeat", default='-1', type=str)
 parser.add_argument("--result", default='record')
 parser.add_argument("--save", default=False, type=bool)
 parser.add_argument("--lambda_val", default=1.0, type=float)
-parser.add_argument("--entropy_thres", default=0.00000001, type=float)
+parser.add_argument("--entropy_thres", default=0.000001, type=float) # 0.00000001
 parser.add_argument('--thres_rec', type=float, default=0.0001, help='coefficient for reconstruction loss') # 0.0001
 parser.add_argument("--optimizer", default='SGD', type=str)
 parser.add_argument('--GPU', type=bool, default=True,
