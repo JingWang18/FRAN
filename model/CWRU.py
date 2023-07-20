@@ -123,8 +123,8 @@ class Feature(nn.Module):
         z2 = self.conv_freq_2(zh[1]) # 64, 32, 300
         z3 = self.conv_freq_3(zh[2]) # 64, 64, 150
 
-        x = self.maxpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
-        x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
+        x = self.avgpool(self.relu(self.bn1(self.conv_time_1(x_0)))) + z1
+        x = self.avgpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
         # x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
         # x = self.SpatialGate(x)
@@ -132,7 +132,7 @@ class Feature(nn.Module):
         return x
 
 class Predictor(nn.Module):
-    def __init__(self, prob=0.1):
+    def __init__(self, prob=0.2):
         super(Predictor, self).__init__()
         self.fc1 = nn.Linear(64*300, 1000)
         self.bn1_fc = nn.BatchNorm1d(1000)
