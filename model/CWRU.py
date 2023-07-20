@@ -72,7 +72,7 @@ class SpatialGate(nn.Module):
         super(SpatialGate, self).__init__()
         kernel_size = 3
         self.compress = ChannelPool()
-        self.spatial = BasicConv(2, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
+        self.spatial = BasicConv(3, 1, kernel_size, stride=1, padding=(kernel_size-1) // 2, relu=False)
 
     def sigmoid(self, x):
         return 1./(1.+torch.exp(-x))
@@ -109,7 +109,7 @@ class Feature(nn.Module):
         self.channel_1 = ChannelGate(32, pool_types=['avg', 'max'])
         self.SpatialGate = SpatialGate()
 
-        self.transform = DWT1DForward(wave='db6', J=3).cuda()
+        self.transform = DWT1DForward(wave='cmor6', J=3).cuda()
         self.channel_1 = ChannelGate(32, pool_types=['avg','max'])
         # self.channel_2 = ChannelGate(64, pool_types=['avg', 'max'])
 
@@ -127,11 +127,7 @@ class Feature(nn.Module):
         x = self.maxpool(self.relu(self.bn2(self.conv_time_2(x)))) + z2
         x = self.maxpool(self.relu(self.bn3(self.conv_time_3(x)))) + z3
 
-        x = self.SpatialGate(x)
-
-        # x = self.SpatialGate(x, is_target)
         # x = self.SpatialGate(x)
-        # x = self.channel_2(x)
 
         return x
 
