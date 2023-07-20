@@ -45,7 +45,7 @@ parser.add_argument("--save", default=False, type=bool)
 parser.add_argument("--lambda_val", default=1.0, type=float)
 parser.add_argument("--entropy_thres", default=0.00000001, type=float)
 parser.add_argument('--thres_rec', type=float, default=0.0001, help='coefficient for reconstruction loss') # 0.0001
-parser.add_argument("--optimizer", default='Adam', type=str)
+parser.add_argument("--optimizer", default='SGD', type=str)
 parser.add_argument('--GPU', type=bool, default=True,
                     help='enable train on GPU or not, default is False')
 
